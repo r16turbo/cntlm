@@ -52,7 +52,7 @@ configure-stamp:
 	./configure
 
 win/resources.o: win/resources.rc
-	@echo Win32: adding ICON resource
+	@echo Win64: adding ICON resource
 	@windres $^ -o $@
 
 install: $(NAME)
@@ -111,23 +111,23 @@ rpm:
 		fakeroot rpm/rules clean; \
 	fi
 
-win: win/setup.iss $(NAME) win/cntlm_manual.pdf win/cntlm.ini win/LICENSE.txt $(NAME)-$(VER)-win32.exe $(NAME)-$(VER)-win32.zip
+win: win/setup.iss $(NAME) win/cntlm_manual.pdf win/cntlm.ini win/LICENSE.txt $(NAME)-$(VER)-win64.exe $(NAME)-$(VER)-win64.zip
 
-$(NAME)-$(VER)-win32.exe:
-	@echo Win32: preparing binaries for GUI installer
+$(NAME)-$(VER)-win64.exe:
+	@echo Win64: preparing binaries for GUI installer
 	@cp $(patsubst %, /bin/%, $(CYGWIN_REQS)) win/
 ifeq ($(DEBUG),1)
-	@echo Win32: copy DEBUG executable
+	@echo Win64: copy DEBUG executable
 	@cp -p cntlm.exe win/
 else
-	@echo Win32: copy release executable
+	@echo Win64: copy release executable
 	@strip -o win/cntlm.exe cntlm.exe
 endif
-	@echo Win32: generating GUI installer
-	@win/Inno5/ISCC.exe /Q win/setup.iss #/Q win/setup.iss
+	@echo Win64: generating GUI installer
+	@win/Inno6/ISCC.exe /Q win/setup.iss #/Q win/setup.iss
 
-$(NAME)-$(VER)-win32.zip: 
-	@echo Win32: creating ZIP release for manual installs
+$(NAME)-$(VER)-win64.zip:
+	@echo Win64: creating ZIP release for manual installs
 	@ln -s win $(NAME)-$(VER)
 	zip -9 $@ $(patsubst %, $(NAME)-$(VER)/%, cntlm.exe $(CYGWIN_REQS) cntlm.ini LICENSE.txt cntlm_manual.pdf) 
 	@rm -f $(NAME)-$(VER)
@@ -139,7 +139,7 @@ win/LICENSE.txt: COPYRIGHT LICENSE
 	@cat COPYRIGHT LICENSE | unix2dos > $@
 
 win/cntlm_manual.pdf: doc/cntlm.1 
-	@echo Win32: generating PDF manual
+	@echo Win64: generating PDF manual
 	@rm -f $@
 	@groff -t -e -mandoc -Tps doc/cntlm.1 | ps2pdf - $@
 
@@ -158,7 +158,8 @@ uninstall:
 clean:
 	@rm -f config/endian config/gethostname config/strdup config/socklen_t config/*.exe
 	@rm -f *.o cntlm cntlm.exe configure-stamp build-stamp config/config.h
-	rm -f $(patsubst %, win/%, $(CYGWIN_REQS) cntlm.exe cntlm.ini LICENSE.txt setup.iss cntlm_manual.pdf)
+	@rm -f $(patsubst %, win/%, *.o $(CYGWIN_REQS) cntlm.exe cntlm.ini LICENSE.txt setup.iss cntlm_manual.pdf)
+	@rm -f $(NAME)-$(VER)-win64.exe $(NAME)-$(VER)-win64.zip
 	@if [ -h Makefile ]; then rm -f Makefile; mv Makefile.gcc Makefile; fi
 
 distclean: clean

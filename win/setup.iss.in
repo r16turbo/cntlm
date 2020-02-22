@@ -8,12 +8,15 @@ AppPublisher=David Kubicek
 AppPublisherURL=http://cntlm.sf.net/
 LicenseFile=LICENSE.txt
 
+ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64
+
 DefaultDirName={pf}\Cntlm
 DefaultGroupName=Cntlm
 SetupIconFile=cntlm.ico
 UninstallDisplayIcon={app}\cntlm.ico
 Uninstallable=yes
-OutputBaseFileName=cntlm-$VERSION-win32
+OutputBaseFileName=cntlm-$VERSION-win64
 OutputDir=..
 
 [Files]
